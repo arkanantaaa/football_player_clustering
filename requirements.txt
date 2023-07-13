@@ -2,4 +2,3 @@ streamlit
 pandas
 matplotlib
 sklearn
-base64
