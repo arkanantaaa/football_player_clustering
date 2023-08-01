@@ -2,9 +2,12 @@ import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
 from sklearn.cluster import KMeans
+from sklearn.metrics.pairwise import cosine_similarity
+from math import pi
+import numpy as np
 import base64
 
-tab1, tab2 = st.tabs(["Melihat Pemain", "Klastering Pemain"])
+tab1, tab2, tab3 = st.tabs(["Melihat Pemain", "Klastering Pemain", "Perbandingan Pemain"])
 with tab1:
     st.markdown(
         """
@@ -159,3 +162,63 @@ with tab1:
             st.write('')
             st.subheader('Download Hasil Klasterisasi')
             st.markdown(filedownload(df), unsafe_allow_html=True)
+
+    with tab3:
+        df_CF = pd.read_excel('df_CF.xlsx')
+        df_CB = pd.read_excel('df_CB.xlsx')
+        df_AM = pd.read_excel('df_AM.xlsx')
+        df_CM = pd.read_excel('df_CM.xlsx')
+        df_Sideback = pd.read_excel('df_Sideback.xlsx')
+        df_Winger = pd.read_excel('df_Winger.xlsx')
+        
+        dataframe_choice = st.selectbox("Pilih Posisi Pemain", ['CF', 'CB', 'AM', 'CM', 'Sideback', 'Winger'])
+        if dataframe_choice == 'CF':
+            df = df_CF
+        elif dataframe_choice == 'CB':
+            df = df_CB
+        elif dataframe_choice == 'AM':
+            df = df_AM
+        elif dataframe_choice == 'CM':
+            df = df_CM
+        elif dataframe_choice == 'Sideback':
+            df = df_Sideback
+        else: 
+            df = df_Winger
+
+        def get_similar_players(player_name):
+            player_index = [list(df['Name']).index(x) for x in list(df['Name']) if player_name in x]
+            player_index = int(player_index[0])
+            df = df.iloc[:, 1:]
+            cos = cosine_similarity(df, df)
+            player_cos = sorted(list(cos[player_index]))[-4:-1]
+            indexes = [list(cos[player_index]).index(x) for x in player_cos]
+            indexes.append(player_index)
+            plot_df = df.iloc[indexes]
+            plot_df1 = plot_df
+            plot_df1.reset_index(drop=True, inplace=True)
+            plot_df1.reindex(index=range(0, 5))
+            plot_categories = list(plot_df1)[1:]
+            plot_values = plot_df1.mean().values.flatten().tolist()
+            plot_values += plot_values[:1]
+            angles = [n / float(len(plot_categories)) * 2 * pi for n in range(len(plot_categories))]
+            angles += angles[:1]
+            fig, ax = plt.subplots(nrows=1, ncols=1, figsize=(15, 10), subplot_kw=dict(polar=True))
+            plt.xticks(angles[:-1], plot_categories, color='grey', size=12)
+            plt.yticks(np.arange(0.0, 1.2, 0.2), ['0', '20', '40', '60', '80', '100'], color='grey', size=12)
+            plt.ylim(0, 1)
+            ax.set_rlabel_position(30)
+            for i in range(len(plot_df1)):
+                val_c1 = plot_df1.loc[i].drop('Name').values.flatten().tolist()
+                val_c1 += val_c1[:1]
+                ax.plot(angles, val_c1, linewidth=1.5, linestyle='solid', label=plot_df1.loc[i]["Name"])
+                ax.fill(angles, val_c1, alpha=0.1)
+            plt.legend(loc='upper right', bbox_to_anchor=(0.1, 0.1))
+            st.pyplot(fig)
+
+        # Streamlit app starts here
+        st.title('Player Similarity Analysis')
+        player_name = st.text_input('Enter player name:')
+        if player_name:
+            player_cos, similar_players_df, _ = get_similar_players(player_name)
+            st.write('Most similar players:')
+            st.write(similar_players_df)
