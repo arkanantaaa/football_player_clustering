@@ -25,7 +25,10 @@ with tab1:
     df_Winger = pd.read_excel('df_Winger.xlsx')
 
     # Tampilkan aplikasi Streamlit
-    st.title('Melihat pemain berdasarkan posisi dan gaya bermain tertentu')
+    st_title = '<p style="font-family:sans-serif ;font-weight:800; color:#FFD700; font-size: 30px;">Melihat pemain berdasarkan kategori dan gaya bermain tertentu</p>'
+    st.markdown(st_title, unsafe_allow_html=True)
+    st_note = '<p style="font-family:sans-serif ;font-weight:600; color:#FFD700; font-size: 15px;">Dibuat oleh : Arkanantaaa | Data : Lapangbola.com</p>'
+    st.markdown(st_note, unsafe_allow_html=True)
 
     # Pilihan untuk memilih dataframe posisi
     dataframe_choice = st.selectbox("Pilih Posisi Pemain", ['CF', 'CB', 'AM', 'CM', 'Sideback', 'Winger'], key='dataframe_choice')
@@ -110,9 +113,9 @@ with tab1:
         labels = kmeans_clustering(df.drop(['Name', 'Position'], axis=1), jumlah_klaster)
 
         # Menampilkan hasil klasterisasi
-        st_title = '<p style="font-family:sans-serif ;font-weight:800; color:#FFD700; font-size: 50px;">Klasterisasi Pemain Sepak Bola Berdasarkan Posisi</p>'
+        st_title = '<p style="font-family:sans-serif ;font-weight:800; color:#FFD700; font-size: 30px;">Klasterisasi Pemain Sepak Bola Berdasarkan Posisi</p>'
         st.markdown(st_title, unsafe_allow_html=True)
-        st_note = '<p style="font-family:sans-serif ;font-weight:600; color:#FFD700; font-size: 20px;">Dibuat oleh : Arkanantaaa | Data : Lapangbola.com</p>'
+        st_note = '<p style="font-family:sans-serif ;font-weight:600; color:#FFD700; font-size: 15px;">Dibuat oleh : Arkanantaaa | Data : Lapangbola.com</p>'
         st.markdown(st_note, unsafe_allow_html=True)
 
         is_note_clicked = st.button('Note')
