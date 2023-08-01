@@ -6,6 +6,7 @@ from sklearn.metrics.pairwise import cosine_similarity
 from math import pi
 import numpy as np
 import base64
+!install openpyxl
 
 tab1, tab2 = st.tabs(["Melihat Pemain", "Klastering Pemain"])
 with tab1:    
