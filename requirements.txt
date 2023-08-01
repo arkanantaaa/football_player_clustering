@@ -2,6 +2,6 @@ streamlit
 pandas
 matplotlib
 scikit-learn
-openpyxl
+!install openpyxl
 numpy
 math
