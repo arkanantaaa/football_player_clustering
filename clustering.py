@@ -17,12 +17,12 @@ with tab1:
     def get_players_by_attack(df, attack_type):
         return df[df['Attack'] == attack_type]
 
-    df_CF = pd.read_excel('df_CF.xlsx')
-    df_CB = pd.read_excel('df_CB.xlsx')
-    df_AM = pd.read_excel('df_AM.xlsx')
-    df_CM = pd.read_excel('df_CM.xlsx')
-    df_Sideback = pd.read_excel('df_Sideback.xlsx')
-    df_Winger = pd.read_excel('df_Winger.xlsx')
+    df_CF = pd.read_csv('df_CF.csv')
+    df_CB = pd.read_csv('df_CB.csv')
+    df_AM = pd.read_csv('df_AM.csv')
+    df_CM = pd.read_csv('df_CM.csv')
+    df_Sideback = pd.read_csv('df_Sideback.csv')
+    df_Winger = pd.read_csv('df_Winger.csv')
 
     # Tampilkan aplikasi Streamlit
     st_title = '<p style="font-family:sans-serif ;font-weight:800; color:#FFD700; font-size: 30px;">Melihat pemain berdasarkan kategori dan gaya bermain tertentu</p>'
@@ -64,21 +64,27 @@ with tab1:
         st.table(selected_players[['Name', 'Attack']])
 
     with tab2:
-        df_CF = pd.read_excel('df_CF(1).xlsx')
-        df_CB = pd.read_excel('df_CB(1).xlsx')
-        df_AM = pd.read_excel('df_AM(1).xlsx')
-        df_CM = pd.read_excel('df_CM(1).xlsx')
-        df_Sideback = pd.read_excel('df_Sideback(1).xlsx')
-        df_Winger = pd.read_excel('df_Winger(1).xlsx')
+        df_CF = pd.read_csv('df_CF(1).csv')
+        df_CB = pd.read_csv('df_CB(1).csv')
+        df_AM = pd.read_csv('df_AM(1).csv')
+        df_CM = pd.read_csv('df_CM(1).csv')
+        df_Sideback = pd.read_csv('df_Sideback(1).csv')
+        df_Winger = pd.read_csv('df_Winger(1).csv')
 
         # Preprocessing data
-        data_encoded = pd.get_dummies(df.drop(['Name', 'Position', 'Defence', 'Attack'], axis=1))
+        data_encoded = pd.get_dummies(df.drop(['Name', 'Position'], axis=1))
 
         # Fungsi untuk melakukan klasterisasi
         def kmeans_clustering(data, n_clusters):
             kmeans = KMeans(n_clusters=n_clusters)
             kmeans.fit(data)
             return kmeans.labels_
+        
+        # Menampilkan hasil klasterisasi
+        st_title = '<p style="font-family:sans-serif ;font-weight:800; color:#FFD700; font-size: 30px;">Klasterisasi Pemain Sepak Bola Berdasarkan Posisi</p>'
+        st.markdown(st_title, unsafe_allow_html=True)
+        st_note = '<p style="font-family:sans-serif ;font-weight:600; color:#FFD700; font-size: 15px;">Dibuat oleh : Arkanantaaa | Data : Lapangbola.com</p>'
+        st.markdown(st_note, unsafe_allow_html=True)
         
         pilih_df = st.selectbox("Pilih Posisi Pemain", ['CF', 'CB', 'AM', 'CM', 'Sideback', 'Winger'], key='pilih_df')
         st.subheader('Pilih jumlah klaster yang diinginkan')
@@ -111,12 +117,6 @@ with tab1:
             
         # Klasterisasi
         labels = kmeans_clustering(df.drop(['Name', 'Position'], axis=1), jumlah_klaster)
-
-        # Menampilkan hasil klasterisasi
-        st_title = '<p style="font-family:sans-serif ;font-weight:800; color:#FFD700; font-size: 30px;">Klasterisasi Pemain Sepak Bola Berdasarkan Posisi</p>'
-        st.markdown(st_title, unsafe_allow_html=True)
-        st_note = '<p style="font-family:sans-serif ;font-weight:600; color:#FFD700; font-size: 15px;">Dibuat oleh : Arkanantaaa | Data : Lapangbola.com</p>'
-        st.markdown(st_note, unsafe_allow_html=True)
 
         is_note_clicked = st.button('Note')
 
